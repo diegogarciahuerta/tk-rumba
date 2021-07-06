@@ -1,0 +1,110 @@
+# ----------------------------------------------------------------------------
+# Copyright (c) 2021, Diego Garcia Huerta.
+#
+# Your use of this software as distributed in this GitHub repository, is
+# governed by the MIT License
+#
+# Your use of the Shotgun Pipeline Toolkit is governed by the applicable
+# license agreement between you and Autodesk / Shotgun.
+#
+# Read LICENSE and SHOTGUN_LICENSE for full details about the licenses that
+# pertain to this software.
+# ----------------------------------------------------------------------------
+
+
+# Author: Diego Garcia Huerta
+# Contact: https://www.linkedin.com/in/diegogh/
+#
+# YOU SHOULD MERGE these entries into your settings file, as
+# THIS FILE BY ITSELF WILL NOT WORK
+# These are the additions to get the engine up and running with the
+# default tk-apps for this environment
+
+
+# --- Rumba
+
+# asset step
+settings.tk-multi-publish2.rumba.asset_step:
+  collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
+  collector_settings:
+      Work Template: rumba_asset_work
+  publish_plugins:
+  - name: Publish to Shotgun
+    hook: "{self}/publish_file.py"
+    settings: {}
+  - name: Upload for review
+    hook: "{self}/upload_version.py"
+    settings: {}
+  - name: Begin file versioning
+    hook: "{engine}/tk-multi-publish2/basic/start_version_control.py"
+    settings: {}
+  - name: Publish to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
+    settings:
+        Publish Template: rumba_asset_publish
+  - name: Publish Animation (USD) to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_usd.py"
+    settings:
+        Publish Template: rumba_asset_usd
+  - name: Publish Animation (FBX) to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_animation_fbx.py"
+    settings:
+        Publish Template: rumba_asset_fbx_animation
+        # if True, add a Maya style namsepace to each referenced nodes like Maya
+        # does with references. The namespace is the name of the Asset root node.
+        Export Namespaces: True
+  - name: Publish Animation (Alembic Cache) to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_animation_alembic_cache.py"
+    settings:
+        Publish Template: rumba_asset_alembic_cache_animation
+  - name: Publish Rumba Node to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_rumba_node.py"
+    settings:
+        Publish Template: rumba_asset_rumba_node
+  help_url: *help_url
+  location: "@apps.tk-multi-publish2.location"
+
+
+# shot step
+settings.tk-multi-publish2.rumba.shot_step:
+  collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
+  collector_settings:
+      Work Template: rumba_shot_work
+  publish_plugins:
+  - name: Publish to Shotgun
+    hook: "{self}/publish_file.py"
+    settings: {}
+  - name: Upload for review
+    hook: "{self}/upload_version.py"
+    settings: {}
+  - name: Begin file versioning
+    hook: "{engine}/tk-multi-publish2/basic/start_version_control.py"
+    settings: {}
+  - name: Publish to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_session.py"
+    settings:
+        Publish Template: rumba_shot_publish
+  - name: Publish Animation (USD) to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_usd.py"
+    settings:
+        Publish Template: rumba_shot_usd
+  - name: Publish Animation (FBX) to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_animation_fbx.py"
+    settings:
+        Publish Template: rumba_shot_fbx_animation
+        # if True, add a Maya style namsepace to each referenced nodes like Maya
+        # does with references. The namespace is the name of the Asset root node.
+        Export Namespaces: True
+  - name: Publish Animation (Alembic Cache) to Shotgun
+    hook: "{self}/publish_file.py:{engine}/tk-multi-publish2/basic/publish_base.py:{engine}/tk-multi-publish2/basic/publish_animation_alembic_cache.py"
+    settings:
+        Publish Template: rumba_shot_alembic_cache_animation
+        # Alembic Cache sub-samples per frame:
+        # A list of sub-samples to export relative to each frame.
+        # If empty, it exports one sample per frame.
+        # Values should be between [-1.0, 1.0].
+        # For example, samples=[0.0, 0.4] in a frame range from 1 to 3
+        # would export these  samples : [1.0, 1.4, 2.0, 2.4, 3.0, 3.4].
+        Sub Samples: []
+  help_url: *help_url
+  location: "@apps.tk-multi-publish2.location"
