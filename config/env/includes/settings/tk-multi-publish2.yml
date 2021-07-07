@@ -28,6 +28,10 @@ settings.tk-multi-publish2.rumba.asset_step:
   collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
   collector_settings:
       Work Template: rumba_asset_work
+      # if true, every asset found in the Rumba scene will be individually
+      # collected for publishing, if false, the Rumba scene as a whole is
+      # considered for publishing
+      Collect Individual Assets: false
   publish_plugins:
   - name: Publish to Shotgun
     hook: "{self}/publish_file.py"
@@ -70,6 +74,10 @@ settings.tk-multi-publish2.rumba.shot_step:
   collector: "{self}/collector.py:{engine}/tk-multi-publish2/basic/collector.py"
   collector_settings:
       Work Template: rumba_shot_work
+      # if true, every asset found in the Rumba scene will be individually
+      # collected for publishing, if false, the Rumba scene as a whole is
+      # considered for publishing
+      Collect Individual Assets: true
   publish_plugins:
   - name: Publish to Shotgun
     hook: "{self}/publish_file.py"
