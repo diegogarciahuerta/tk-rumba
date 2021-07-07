@@ -141,6 +141,13 @@ class RumbaSessionCollector(HookBaseClass):
                 "to publish plugins via the collected item's "
                 "properties. ",
             },
+            "Collect Individual Assets": {
+                "type": bool,
+                "default": True,
+                "description": "if True, every asset found in the Rumba scene "
+                "will be individually collected for publishing, otherwise the "
+                "Rumba scene as a whole is collected for publishing.",
+            },
         }
 
         # update the base settings with these settings
@@ -164,37 +171,41 @@ class RumbaSessionCollector(HookBaseClass):
         if session_item:
             items.append(session_item)
 
-            usd_asset_items = self.collect_rumba_usd_assets(settings, session_item)
-            if usd_asset_items:
-                items.extend(usd_asset_items)
-
-            # uncomment if you want the whole scene as a USD file
-            # usd_scene_item = self.collect_rumba_usd_scene(settings, session_item)
-            # if usd_scene_item:
-            #     items.append(usd_scene_item)
-
-            fbx_asset_animation_items = self.collect_rumba_fbx_assets(
-                settings, session_item
+            collect_individual_assets = settings.get("Collect Individual Assets").value
+            self.parent.logger.debug(
+                "Collect Individual Assets: %s" % collect_individual_assets
             )
-            if fbx_asset_animation_items:
-                items.extend(fbx_asset_animation_items)
 
-            # fbx_scene_item = self.collect_rumba_fbx_scene(
-            #     settings, session_item
-            # )
-            # if fbx_scene_item:
-            #     items.append(fbx_scene_item)
+            if collect_individual_assets:
+                usd_asset_items = self.collect_rumba_usd_assets(settings, session_item)
+                if usd_asset_items:
+                    items.extend(usd_asset_items)
+            else:
+                usd_scene_item = self.collect_rumba_usd_scene(settings, session_item)
+                if usd_scene_item:
+                    items.append(usd_scene_item)
 
-            abc_asset_items = self.collect_rumba_abc_assets(settings, session_item)
-            if abc_asset_items:
-                items.extend(abc_asset_items)
+            if collect_individual_assets:
+                fbx_asset_animation_items = self.collect_rumba_fbx_assets(
+                    settings, session_item
+                )
+                if fbx_asset_animation_items:
+                    items.extend(fbx_asset_animation_items)
+            else:
+                fbx_scene_item = self.collect_rumba_fbx_scene(settings, session_item)
+                if fbx_scene_item:
+                    items.append(fbx_scene_item)
 
-            # uncomment if you want the whole scene as alembic cache
-            # abc_animation_item = self.collect_rumba_abc_scene(
-            #     settings, session_item
-            # )
-            # if abc_animation_item:
-            #     items.append(abc_animation_item)
+            if collect_individual_assets:
+                abc_asset_items = self.collect_rumba_abc_assets(settings, session_item)
+                if abc_asset_items:
+                    items.extend(abc_asset_items)
+            else:
+                abc_animation_item = self.collect_rumba_abc_scene(
+                    settings, session_item
+                )
+                if abc_animation_item:
+                    items.append(abc_animation_item)
 
             rumba_node_item = (
                 self.collect_rumba_selection_as_nodes(settings, session_item) or []
@@ -241,6 +252,7 @@ class RumbaSessionCollector(HookBaseClass):
         # if a work template is defined, add it to the item properties so
         # that it can be used by attached publish plugins
         work_template_setting = settings.get("Work Template")
+
         if work_template_setting:
 
             work_template = publisher.engine.get_template_by_name(
@@ -325,7 +337,7 @@ class RumbaSessionCollector(HookBaseClass):
             # no document is active, so nothing to see here!
             return
 
-        display_name = "Animation as FBX"
+        display_name = "Scene Animation as FBX"
 
         # create the session item for the publish hierarchy
         item = parent_item.create_item("rumba.animation.fbx", "FBX File", display_name)
@@ -572,7 +584,7 @@ class RumbaSessionCollector(HookBaseClass):
             # no document is active, so nothing to see here!
             return
 
-        display_name = "Animation as Alembic Cache"
+        display_name = "Scene Alembic Cache"
 
         # create the session item for the publish hierarchy
         item = parent_item.create_item(

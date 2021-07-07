@@ -255,16 +255,20 @@ The Publish app allows artists to publish their work so that it can be used by a
 
 The basic publishing of the current session is provided as [hooks](hooks/tk-multi-publish2/basic) for this app.
 
+### Publisher Collector Options:
+`Collect Individual Assets`: if true, every asset found in the Rumba scene will be individually collected for publishing, if false, the Rumba scene as a whole is considered for publishing.
+The default configuration is setup so for the asset step environment the whole scene is considered for publishing, and at shot step environment individual assets are collected for individual publishing.
+
 ### FBX Animation
 
-Provides the ability to publish the animation as FBX format  as it is supported in Rumba. Note that it will export the whole scene, no support for only selection is provided, please adjust according to your pipeline needs.
+Provides the ability to publish the scene/assets animation as FBX format as it is supported in Rumba.
 
 Options:
-`Export Namespaces`: if True, add a Maya style namespace to each referenced nodes like Maya does with references. The namespace is the name of the Asset root node.
+`Export Namespaces`: if true, add a Maya style namespace to each referenced nodes like Maya does with references. The namespace is the name of the Asset root node.
 
 ### Alembic Cache
 
-I also provide the ability to publish the animation as Alembic cache format. Note that it will export the whole scene, no support for only selection is provided, please adjust according to your pipeline needs.
+I also provide the ability to publish the scene/assets as Alembic cache format.
 
 Options:
 `Sub Samples`: A list of sub-samples to export relative to each frame. If empty, it exports one sample per frame. Values should be between [-1.0, 1.0].
@@ -272,7 +276,7 @@ For example, samples=[0.0, 0.4] in a frame range from 1 to 3 would export these 
 
 ### USD Stage
 
-Provides a way to publish the current Rumba scene as a USD stage. Note that it will export the whole scene, no support for only selection is provided, please adjust according to your pipeline needs.
+Provides a way to publish the scene/assets as a USD stage(s).
 
 ### Rumba Node
 
